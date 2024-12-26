@@ -3,28 +3,36 @@ import { addAlert } from "../Alert/AlertSlice";
 // import store from "../../app/store";
 import uniqid from "uniqid";
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import store from "../../app/store";
+import { addAlert } from "../Alert/AlertSlice";
+import uniqid from "uniqid";
 
-interface userInterface {
-  name: string;
+interface userListInterface {
   email: string;
   userId: string;
+  exp: number;
+}
+
+interface userInterface {
+  email: string;
+  userId: string;
+  userList: userListInterface[];
   status: "idle" | "loading" | "error" | "success";
   error: string;
   exp: number;
 }
 
 interface customJwtPayload extends JwtPayload {
-  name: string;
   email: string;
   userId: string;
   exp: number;
 }
 
 const initialState: userInterface = {
-  name: "",
   email: "",
   userId: "",
   status: "idle",
+  userList: [],
   error: "",
   exp: 0,
 };
@@ -100,6 +108,38 @@ export const postUserLogin = createAsyncThunk<
   }
 });
 
+export const fetchUserList = createAsyncThunk(
+  "fetch/userList",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await fetch(`http://localhost:5500/api/v1/auth/fetch/users`, {
+        method: "GET",
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      });
+
+      const dataRes = await res.json();
+
+      if (!res.ok) {
+        throw new Error(dataRes.message);
+      }
+      dispatch(
+        addAlert({
+          message: dataRes.message,
+          color: "green",
+          alertId: uniqid(),
+        })
+      );
+      return dataRes.userList;
+    } catch (err: unknown) {
+      const mssg = err instanceof Error ? err.message : "unknown error";
+      dispatch(addAlert({ message: mssg, color: "red", alertId: uniqid() }));
+      return rejectWithValue(mssg);
+    }
+  }
+);
+
 // Redux slice
 const UserSlice = createSlice({
   name: "userSlice",
@@ -107,13 +147,19 @@ const UserSlice = createSlice({
   reducers: {
     setUserLoginCredential: (
       state,
-      action: PayloadAction<{ userId: string; email: string; name: string }>
+      action: PayloadAction<{ userId: string; email: string }>
     ) => {
       state.userId = action.payload.userId;
       state.email = action.payload.email;
-      state.name = action.payload.name;
+    },
+    removeUserLoginCredential: (state) => {
+      state.userId = "";
+      state.email = "";
+      state.exp = 0;
+      localStorage.removeItem("token");
     },
   },
+  // wont be using the below code , but cannot comment why not ? THE ALL POWERFULL TYPESCRIPT WILL GET ANGRY
   extraReducers: (builder) => {
     builder
       .addCase(postCreateNewUser.pending, (state) => {
@@ -137,6 +183,24 @@ const UserSlice = createSlice({
       );
 
     builder
+      .addCase(fetchUserList.pending, (state) => {
+        state.status = "loading";
+        state.error = "";
+      })
+      .addCase(fetchUserList.fulfilled, (state, action) => {
+        state.status = "success";
+        state.userList = action.payload;
+      })
+      .addCase(
+        fetchUserList.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.status = "error";
+          state.error =
+            action.payload || action.error?.message || "An error occurred";
+        }
+      );
+
+    builder
       .addCase(postUserLogin.pending, (state) => {
         state.status = "loading";
         state.error = "";
@@ -149,12 +213,10 @@ const UserSlice = createSlice({
           localStorage.setItem("token", action.payload.token);
           try {
             const {
-              name,
               email,
               userId,
               exp,
             }: {
-              name: string;
               email: string;
               userId: string;
               exp: number;
@@ -162,7 +224,6 @@ const UserSlice = createSlice({
             state.email = email;
             state.userId = userId;
             state.exp = exp;
-            state.name = name;
           } catch (err: unknown) {
             const mssg: string =
               err instanceof Error ? err.message : "An error occurred";
@@ -181,5 +242,6 @@ const UserSlice = createSlice({
   },
 });
 
-export const { setUserLoginCredential } = UserSlice.actions;
+export const { setUserLoginCredential, removeUserLoginCredential } =
+  UserSlice.actions;
 export default UserSlice;

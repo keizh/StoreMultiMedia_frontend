@@ -10,20 +10,23 @@ import { setUserLoginCredential } from "../features/userSignupSignin/userSSSlice
 import { addAlert } from "../features/Alert/AlertSlice";
 import uniqid from "uniqid";
 
+// POINT_1 ==> RESPONSIBLE FOR CHECKING IF TOKEN IS EXPIRED OR NOT
+// POINT_2 ==> IF TOKEN IS EXPIRED RETURN FALSE
+// POINT_3 ==> IF TOKEN IS NOT EXPRED RETURN TRUE
+// POINT_4 ==> IF TOKEN IS ABSENT SEND FALSE
 const tokenAuth = () => {
   const token = localStorage.getItem("token");
-  console.log(`run`, token);
   if (token) {
     try {
       const {
-        name,
         email,
         userId,
         exp,
-      }: { name: string; email: string; userId: string; exp: number } =
+      }: { email: string; userId: string; exp: number } =
         jwtDecode<customJwtPayload>(token);
       if (exp * 1000 > Date.now()) {
-        store.dispatch(setUserLoginCredential({ name, email, userId }));
+        store.dispatch(setUserLoginCredential({ email, userId }));
+        //  POINT_3
         return true;
       } else {
         localStorage.removeItem("token");
@@ -34,6 +37,7 @@ const tokenAuth = () => {
             color: "red",
           })
         );
+        //  POINT_4
         return false;
       }
     } catch (err: unknown) {
@@ -41,9 +45,12 @@ const tokenAuth = () => {
       store.dispatch(
         addAlert({ message: mssg, alertId: uniqid(), color: "red" })
       );
+      localStorage.removeItem("token");
+      //  ERROR RETURN FALSE
       return false;
     }
   } else {
+    // POINT_4
     return false;
   }
 };

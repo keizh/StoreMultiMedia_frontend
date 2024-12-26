@@ -119,7 +119,7 @@ export function SignUp() {
     const asyncFn = async () => {
       const ans = tokenAuth();
       if (ans) {
-        navigate("/user/photos", { replace: true });
+        navigate("/user/auth/photos", { replace: true });
         console.log(`valid token`);
       }
     };
@@ -149,6 +149,7 @@ export function SignUp() {
               Your Name
             </Typography>
             <Input
+              disabled
               name="name"
               onChange={handleChange}
               size="lg"
@@ -162,6 +163,7 @@ export function SignUp() {
               Your Email
             </Typography>
             <Input
+              disabled
               name="email"
               onChange={handleChange}
               size="lg"
@@ -191,6 +193,7 @@ export function SignUp() {
             </Typography>
 
             <Input
+              disabled
               name="password"
               onChange={handleChange}
               type="password"
@@ -233,6 +236,7 @@ export function SignUp() {
             </ul>
           </Alert>
           <Button
+            disabled
             loading={loadingState}
             type="submit"
             color={canClick ? "green" : "red"}

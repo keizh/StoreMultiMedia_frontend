@@ -29,13 +29,17 @@ function AlertComp(props: { ele: AlertType; index: number }) {
   useEffect(() => {
     const jwtRegex = /jwt/gi;
     const msg = props.ele.message;
+    let timer: ReturnType<typeof setTimeout>;
     if (msg.match(jwtRegex)) {
       navigate("/user/login");
     } else {
-      setTimeout(() => {
+      timer = setTimeout(() => {
         dispatch(removeAlert({ id: props.ele.alertId }));
       }, 3000);
     }
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
   return (
     <Alert

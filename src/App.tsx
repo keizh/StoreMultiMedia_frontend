@@ -1,19 +1,17 @@
-import { Routes, Route, Outlet, useSearchParams } from "react-router-dom";
-import Login from "./pages/Login";
-import SignUp from "./pages/Signup";
+import { Outlet, useSearchParams } from "react-router-dom";
+
 import AlertSystem from "./components/AlertSystem";
-import Loader from "./pages/Loader";
-import Home from "./pages/Home";
-import { useEffect } from "react";
+
+import { useEffect, useLayoutEffect } from "react";
 import useDispatchHook from "./customHooks/useDispatchHook";
 import { addAlert } from "./features/Alert/AlertSlice";
 import uniqid from "uniqid";
-import useSelectorHook from "./customHooks/useSelectorHook";
 
-const PageDefault = () => {
+export const PageDefault = () => {
   const dispatch = useDispatchHook();
   const [searchParams, setSearchParams] = useSearchParams();
-  useEffect(() => {
+  // will continue observing the searchParams
+  useLayoutEffect(() => {
     const token = searchParams.get("token");
     const issue = searchParams.get("issue");
     if (token) {
@@ -30,33 +28,20 @@ const PageDefault = () => {
       dispatch(addAlert({ alertId: uniqid(), message: issue, color: "red" }));
     }
     setSearchParams({});
-  }, [searchParams]);
+  }, [dispatch, searchParams, setSearchParams]);
 
   return (
-    <div>
+    <div className=" bg-slate-50 w-full h-fit overflow-y-auto overflow-x-hidden">
       <AlertSystem />
       <Outlet />
     </div>
   );
 };
 
-const NotFound = () => {
+export const NotFound = () => {
   return <div className="h-screen w-screen ">not found</div>;
 };
 
 export default function App() {
-  return (
-    <div>
-      <Routes>
-        {/* outlet does cause a bit of navigation difficulties */}
-        <Route path="/" element={<Loader />} />
-        <Route path="/user" element={<PageDefault />}>
-          <Route path="signup" element={<SignUp />} />
-          <Route path="login" element={<Login />} />
-          <Route path="photos" element={<Home />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </div>
-  );
+  return <div>App Component</div>;
 }

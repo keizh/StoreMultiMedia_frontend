@@ -12,6 +12,7 @@ import useSelectorHook from "../customHooks/useSelectorHook";
 import { z } from "zod";
 import { NavLink, useNavigate } from "react-router-dom";
 import tokenAuth from "../utils/auth";
+import useAuthChecker from "../customHooks/useAuthChecker";
 
 function IconSolid(): ReactElement {
   return (
@@ -36,6 +37,7 @@ interface loginCredentialsInterface {
 }
 
 export function Login() {
+  useAuthChecker("/user/login", "/user/auth/photos");
   const navigate = useNavigate();
   const dispatch = useDispatchHook();
   const { userId } = useSelectorHook("User");
@@ -58,30 +60,30 @@ export function Login() {
     dispatch(postUserLogin(data));
   };
 
-  useEffect(() => {
-    if (data.name != "" && data.email != "" && data.password != "") {
-      setCanClick(true);
-    } else {
-      setCanClick(false);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data.name != "" && data.email != "" && data.password != "") {
+  //     setCanClick(true);
+  //   } else {
+  //     setCanClick(false);
+  //   }
+  // }, [data]);
 
-  useEffect(() => {
-    if (userId != "") {
-      setLoadingState(true);
-      setTimeout(() => {
-        setLoadingState(false);
-        navigate("/user/photos");
-      }, 2000);
-    }
-  }, [userId]);
+  // useEffect(() => {
+  //   if (userId != "") {
+  //     setLoadingState(true);
+  //     setTimeout(() => {
+  //       setLoadingState(false);
+  //       navigate("/user/photos");
+  //     }, 2000);
+  //   }
+  // }, [userId]);
 
-  useEffect(() => {
-    if (tokenAuth()) {
-      navigate("/user/photos");
-      console.log("/photos");
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   if (tokenAuth()) {
+  //     navigate("/user/photos");
+  //     console.log("/photos");
+  //   }
+  // }, [navigate]);
 
   return (
     <div className="min-h-[100vh] overflow-y-auto overflow-x-hidden w-full flex justify-center items-center">
@@ -103,6 +105,7 @@ export function Login() {
               Your Email
             </Typography>
             <Input
+              disabled
               name="email"
               onChange={handleChange}
               size="lg"
@@ -117,6 +120,7 @@ export function Login() {
             </Typography>
 
             <Input
+              disabled
               name="password"
               onChange={handleChange}
               type="password"
@@ -130,6 +134,7 @@ export function Login() {
           </div>
 
           <Button
+            disabled
             loading={loadingState}
             type="submit"
             color={canClick ? "green" : "red"}
