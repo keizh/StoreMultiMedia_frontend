@@ -10,7 +10,10 @@ import {
 } from "../features/Album/albumSlice";
 
 import store from "../app/store";
-import { emptyPhotos } from "../features/Photos/PhotosSlice";
+import {
+  emptyPhotos,
+  chosenPhotoReducer,
+} from "../features/Photos/PhotosSlice";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 function Album() {
   const navigate = useNavigate();
@@ -80,6 +83,7 @@ function Album() {
                     viewerIsOwner,
                   },
                 });
+                dispatch(chosenPhotoReducer(ele));
               }}
             >
               <img
