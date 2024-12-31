@@ -292,7 +292,7 @@ const PhotoSlice = createSlice({
         ) => {
           state.status = "success";
           state.PhotosArr = action.payload.images;
-          state.tags = action.payload.tags;
+          state.tags = ["All Images", ...action.payload.tags];
           console.log(`Photos fetched`, action.payload.images);
         }
       )

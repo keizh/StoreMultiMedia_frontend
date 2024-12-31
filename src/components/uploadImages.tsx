@@ -219,7 +219,7 @@ export default function UploadImages({ albumI }) {
               type="submit"
               className="mr-1"
             >
-              <span>Create Album</span>
+              <span>upload Images</span>
             </Button>
           </form>
         </DialogBody>

@@ -8,6 +8,7 @@ import {
   setDeletedAlbumFalse,
   deleteAlbum,
 } from "../features/Album/albumSlice";
+import { Select, Option } from "@material-tailwind/react";
 
 import store from "../app/store";
 import {
@@ -19,9 +20,10 @@ function Album() {
   const navigate = useNavigate();
   const location = useLocation();
   const viewerIsOwner = location.state;
-  const { PhotosArr, status } = useSelectorHook("Photos");
+  const { PhotosArr, status, tags } = useSelectorHook("Photos");
   const { deletedAlbum } = useSelectorHook("Album");
   const [deleteButton, setDeleteButton] = useState(false);
+  const [tag, setTag] = useState("");
   const dispatch = useDispatchHook();
   const { albumid } = useParams();
   const deleteHandler = (e) => {
@@ -54,8 +56,27 @@ function Album() {
 
   return (
     <div className="mt-[100px]">
+      <div className="min-w-[150px] w-[300px] mt-[100px]">
+        <Select onChange={(val) => setTag(val)} label="Filter based on Tag">
+          {tags.map((ele, idx) => {
+            if (ele == "All Images") {
+              return (
+                <Option key={idx} value="">
+                  {ele}
+                </Option>
+              );
+            } else {
+              return (
+                <Option key={idx} value={ele}>
+                  {ele}
+                </Option>
+              );
+            }
+          })}
+        </Select>
+      </div>
       {viewerIsOwner && (
-        <div className="flex p-5 justify-end gap-2">
+        <div className="flex p-5 justify-end gap-2 ">
           <UploadImages />
           <UpdateAlbum />
           <Button
@@ -72,26 +93,47 @@ function Album() {
       {PhotosArr.length == 0 && status == "success" && <p>upload Images..</p>}
       {PhotosArr.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
-          {PhotosArr.map((ele) => (
-            <div
-              key={ele._id}
-              className="p-2 w-full aspect-square drop-shadow-2xl "
-              onClick={() => {
-                navigate(`/user/image`, {
-                  state: {
-                    photoInfo: ele,
-                    viewerIsOwner,
-                  },
-                });
-                dispatch(chosenPhotoReducer(ele));
-              }}
-            >
-              <img
-                src={ele.imgURL}
-                className="w-full select-none h-full rounded-2xl object-cover  cursor-pointer "
-              />
-            </div>
-          ))}
+          {tag == ""
+            ? PhotosArr.map((ele) => (
+                <div
+                  key={ele._id}
+                  className="p-2 w-full aspect-square drop-shadow-2xl "
+                  onClick={() => {
+                    navigate(`/user/image`, {
+                      state: {
+                        photoInfo: ele,
+                        viewerIsOwner,
+                      },
+                    });
+                    dispatch(chosenPhotoReducer(ele));
+                  }}
+                >
+                  <img
+                    src={ele.imgURL}
+                    className="w-full select-none h-full rounded-2xl object-cover  cursor-pointer "
+                  />
+                </div>
+              ))
+            : PhotosArr.filter((ele) => ele.tags.includes(tag)).map((ele) => (
+                <div
+                  key={ele._id}
+                  className="p-2 w-full aspect-square drop-shadow-2xl "
+                  onClick={() => {
+                    navigate(`/user/image`, {
+                      state: {
+                        photoInfo: ele,
+                        viewerIsOwner,
+                      },
+                    });
+                    dispatch(chosenPhotoReducer(ele));
+                  }}
+                >
+                  <img
+                    src={ele.imgURL}
+                    className="w-full select-none h-full rounded-2xl object-cover  cursor-pointer "
+                  />
+                </div>
+              ))}
         </div>
       )}
     </div>

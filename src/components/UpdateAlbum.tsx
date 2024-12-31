@@ -164,7 +164,7 @@ export default function UploadAlbum() {
               type="submit"
               className="mr-1"
             >
-              <span>Create Album</span>
+              <span>Update Album</span>
             </Button>
           </form>
         </DialogBody>
