@@ -1,13 +1,7 @@
 import { useState, useEffect, ReactElement } from "react";
-import {
-  Card,
-  Input,
-  Button,
-  Typography,
-  Alert,
-} from "@material-tailwind/react";
-import { postCreateNewUser } from "../features/userSignupSignin/userSSSlice";
-import useDispatchHook from "../customHooks/useDispatchHook";
+import { Input, Button, Typography, Alert } from "@material-tailwind/react";
+// import { postCreateNewUser } from "../features/userSignupSignin/userSSSlice";
+// import useDispatchHook from "../customHooks/useDispatchHook";
 import { z } from "zod";
 import { NavLink, useNavigate } from "react-router-dom";
 import tokenAuth from "../utils/auth";
@@ -64,7 +58,7 @@ interface errorInterface {
 
 export function SignUp() {
   const navigate = useNavigate();
-  const dispatch = useDispatchHook();
+  // const dispatch = useDispatchHook();
   const initialData: signupCredentialsInterface = {
     name: "",
     email: "",
@@ -92,7 +86,7 @@ export function SignUp() {
     setLoadingState(true);
     console.log(result);
     if (result.success) {
-      dispatch(postCreateNewUser(data));
+      // dispatch(postCreateNewUser(data));
       setTimeout(() => {
         navigate("/user/login");
       }, 3500);
@@ -129,10 +123,10 @@ export function SignUp() {
   return (
     <div className="min-h-[100vh] overflow-y-auto overflow-x-hidden w-full flex justify-center items-center">
       <div className="max-w-[90%] sm:w-[400px]">
-        <Typography align="center" variant="h4" color="blue-gray">
+        <Typography className="text-center" variant="h4" color="blue-gray">
           KoviasPix
         </Typography>
-        <Typography color="gray" align="center" className="mt-1 font-normal">
+        <Typography color="gray" className="text-center mt-1 font-normal">
           Welcome to KoviasPix. Enter your details to register.
         </Typography>
         <form
@@ -149,6 +143,7 @@ export function SignUp() {
               Your Name
             </Typography>
             <Input
+              crossOrigin={undefined}
               disabled
               name="name"
               onChange={handleChange}
@@ -163,6 +158,7 @@ export function SignUp() {
               Your Email
             </Typography>
             <Input
+              crossOrigin={undefined}
               disabled
               name="email"
               onChange={handleChange}
@@ -178,10 +174,9 @@ export function SignUp() {
                 {error.email?.map((ele, index) => (
                   <Typography
                     key={index}
-                    variant="leading"
-                    className="-mb-2"
+                    variant="lead"
+                    className="-mb-2 text-center"
                     color="red"
-                    align="center"
                   >
                     {ele}
                   </Typography>
@@ -193,6 +188,7 @@ export function SignUp() {
             </Typography>
 
             <Input
+              crossOrigin={undefined}
               disabled
               name="password"
               onChange={handleChange}
@@ -210,10 +206,9 @@ export function SignUp() {
               {error.password?.map((ele, index) => (
                 <Typography
                   key={index}
-                  variant="leading"
+                  variant="lead"
                   color="blue-gray"
-                  className="-mb-2"
-                  align="center"
+                  className="-mb-2 text-center"
                 >
                   {ele}
                 </Typography>

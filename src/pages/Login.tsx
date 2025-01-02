@@ -1,35 +1,9 @@
-import { useState, useEffect, ReactElement } from "react";
-import {
-  Card,
-  Input,
-  Button,
-  Typography,
-  Alert,
-} from "@material-tailwind/react";
+import { useState } from "react";
+import { Input, Button, Typography } from "@material-tailwind/react";
 import { postUserLogin } from "../features/userSignupSignin/userSSSlice";
 import useDispatchHook from "../customHooks/useDispatchHook";
-import useSelectorHook from "../customHooks/useSelectorHook";
-import { z } from "zod";
-import { NavLink, useNavigate } from "react-router-dom";
-import tokenAuth from "../utils/auth";
+import { NavLink } from "react-router-dom";
 import useAuthChecker from "../customHooks/useAuthChecker";
-
-function IconSolid(): ReactElement {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className="h-6 w-6"
-    >
-      <path
-        fillRule="evenodd"
-        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
 
 interface loginCredentialsInterface {
   email: string;
@@ -38,17 +12,15 @@ interface loginCredentialsInterface {
 
 export function Login() {
   useAuthChecker("/user/login", "/user/auth/photos");
-  const navigate = useNavigate();
   const dispatch = useDispatchHook();
-  const { userId } = useSelectorHook("User");
   const initialData: loginCredentialsInterface = {
     email: "",
     password: "",
   };
 
   const [data, setData] = useState<loginCredentialsInterface>(initialData);
-  const [canClick, setCanClick] = useState<boolean>(false);
-  const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [canClick] = useState<boolean>(false);
+  const [loadingState] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value }: { name: string; value: string } = e.target;
@@ -88,7 +60,7 @@ export function Login() {
   return (
     <div className="min-h-[100vh] overflow-y-auto overflow-x-hidden w-full flex justify-center items-center">
       <div className="max-w-[90%] sm:w-[400px]">
-        <Typography align="center" variant="h4" color="blue-gray">
+        <Typography className="text-center" variant="h4" color="blue-gray">
           Login to KoviasPix
         </Typography>
         <form
@@ -105,6 +77,7 @@ export function Login() {
               Your Email
             </Typography>
             <Input
+              crossOrigin={undefined}
               disabled
               name="email"
               onChange={handleChange}
@@ -120,6 +93,7 @@ export function Login() {
             </Typography>
 
             <Input
+              crossOrigin={undefined}
               disabled
               name="password"
               onChange={handleChange}

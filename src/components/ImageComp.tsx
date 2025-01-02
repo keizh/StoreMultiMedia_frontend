@@ -4,10 +4,10 @@ import ButtonGroupComp from "./ButtonGroupComp";
 import CommentBox from "./CommentBox";
 import { AnimatePresence } from "framer-motion";
 function ImageComp() {
-  console.log;
   const location = useLocation();
   const navigate = useNavigate();
-  const { photoInfo, viewerIsOwner } = location.state;
+  // const { photoInfo, viewerIsOwner } = location.state;
+  const { photoInfo } = location.state;
   const [open, setOpen] = useState(false);
   return (
     <div className="h-screen w-screen bg-black relative overflow-hidden">

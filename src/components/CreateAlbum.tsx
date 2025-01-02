@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogHeader,
   DialogBody,
-  DialogFooter,
   Input,
   Textarea,
   Typography,
@@ -31,7 +30,7 @@ export default function CreateAlbum() {
     }
   }, [data]);
 
-  const submitHandler = (e) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const listOfName: string[] = OwnerAlbums.map((ele) => ele.name);
     if (listOfName.includes(data.name.trim())) {
@@ -55,6 +54,7 @@ export default function CreateAlbum() {
         <DialogBody>
           <form onSubmit={submitHandler} className="py-2 flex flex-col gap-5">
             <Input
+              crossOrigin={undefined}
               value={data.name}
               onChange={(e) =>
                 setData((data) => ({

@@ -2,7 +2,7 @@ import { Outlet, useSearchParams } from "react-router-dom";
 
 import AlertSystem from "./components/AlertSystem";
 
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import useDispatchHook from "./customHooks/useDispatchHook";
 import { addAlert } from "./features/Alert/AlertSlice";
 import uniqid from "uniqid";

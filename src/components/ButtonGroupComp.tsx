@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ButtonGroup, Button } from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 import useSelectorHook from "../customHooks/useSelectorHook";
 import useDispatchHook from "../customHooks/useDispatchHook";
 import { deletePhoto } from "../features/Photos/PhotosSlice";

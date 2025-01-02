@@ -1,4 +1,11 @@
 {
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false, // Allows implicit 'any' types, can help with third-party libraries
+    "noImplicitThis": false, // Allows implicit 'this' types
+    "strictNullChecks": false, // Disables strict null checks
+    "skipLibCheck": true // Skips checking of library declarations
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

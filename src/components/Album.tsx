@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useEffect } from "react";
+import { useLayoutEffect, useState, useEffect } from "react";
 import UploadImages from "../components/uploadImages";
 import UpdateAlbum from "../components/UpdateAlbum";
 import useSelectorHook from "../customHooks/useSelectorHook";
@@ -10,7 +10,6 @@ import {
 } from "../features/Album/albumSlice";
 import { Select, Option } from "@material-tailwind/react";
 
-import store from "../app/store";
 import {
   emptyPhotos,
   chosenPhotoReducer,
@@ -26,15 +25,14 @@ function Album() {
   const [tag, setTag] = useState("");
   const dispatch = useDispatchHook();
   const { albumid } = useParams();
-  const deleteHandler = (e) => {
+  const deleteHandler = () => {
     setDeleteButton(true);
-    // @ts-ignore
     dispatch(deleteAlbum(albumid));
   };
 
   useLayoutEffect(() => {
     dispatch(setDeletedAlbumFalse());
-  }, []);
+  }, [dispatch]);
   // const deletedAlbum = store.getState().Album.deletedAlbum;
   useEffect(() => {
     console.log(
@@ -52,7 +50,7 @@ function Album() {
       dispatch(emptyPhotos());
       navigate("/user/auth/photos");
     }
-  }, [deletedAlbum, deleteButton, navigate]);
+  }, [deletedAlbum, deleteButton, navigate, dispatch]);
 
   return (
     <div className="mt-[100px]">

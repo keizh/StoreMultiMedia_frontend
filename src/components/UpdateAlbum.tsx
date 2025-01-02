@@ -1,7 +1,5 @@
-// @ts-nocheck
 import Select from "react-select";
-import { useState, useEffect, useRef } from "react";
-import ChipDismissible from "../components/chipTag";
+import { useState, useEffect } from "react";
 import {
   Button,
   Dialog,
@@ -12,9 +10,7 @@ import {
 } from "@material-tailwind/react";
 import useSelectorHook from "../customHooks/useSelectorHook";
 import useDispatchHook from "../customHooks/useDispatchHook";
-import { postPhotos } from "../features/Photos/PhotosSlice";
 import { useParams } from "react-router-dom";
-import uniqid from "uniqid";
 import { updateAlbum } from "../features/Album/albumSlice";
 
 export default function UploadAlbum() {
@@ -27,7 +23,7 @@ export default function UploadAlbum() {
 
   const dispatch = useDispatchHook();
   const handleOpen = () => setOpen(!open);
-  const { userId, userList } = useSelectorHook("User");
+  const { userList } = useSelectorHook("User");
   const { selectedAlbumData } = useSelectorHook("Album");
   const { albumid } = useParams();
 
@@ -78,9 +74,14 @@ export default function UploadAlbum() {
         console.log(`canclick is false`);
       }
     }
-  }, [albumData, selectEmails]);
+  }, [
+    albumData,
+    selectEmails,
+    selectedAlbumData?.description,
+    userList.length,
+  ]);
 
-  const submitHandler = (e) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log(`albumData`, albumData);
     // console.log(`selectEmails`, selectEmails);
@@ -113,6 +114,7 @@ export default function UploadAlbum() {
                 Album Name
               </Typography>
               <Input
+                crossOrigin={undefined}
                 label="Album Name"
                 disabled={true}
                 value={albumData?.name ?? ""}
@@ -120,6 +122,7 @@ export default function UploadAlbum() {
             </div>
 
             <Input
+              crossOrigin={undefined}
               value={albumData?.description ?? ""}
               onChange={(e) =>
                 setAlbumData((albumData) => ({

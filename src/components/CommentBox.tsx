@@ -12,14 +12,14 @@ function CommentBox({ imageId }) {
   //   const specificPhoto = PhotosArr.filter((ele) => ele.imageId == imageId);
   //   const { comments } = photoInfo;
   const [value, setValue] = React.useState("");
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(addComment({ imageId, comment: value }));
     console.log(`value of comment`, value);
     setValue("");
     console.log(chosenPhoto);
   };
-  const handleDelete = (commentId) => {
+  const handleDelete = (commentId: string) => {
     dispatch(removeComment({ imageId, commentId }));
   };
   return (
@@ -61,6 +61,7 @@ function CommentBox({ imageId }) {
       </div>
       <form onSubmit={onSubmitHandler} className="flex gap-2 p-2">
         <Input
+          crossOrigin={undefined}
           className="bg-slate-500"
           value={value}
           onChange={(e) => setValue(e.target.value)}

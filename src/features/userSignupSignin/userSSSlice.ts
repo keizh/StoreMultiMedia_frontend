@@ -1,11 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { addAlert } from "../Alert/AlertSlice";
 // import store from "../../app/store";
 import uniqid from "uniqid";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import store from "../../app/store";
 import { addAlert } from "../Alert/AlertSlice";
-import uniqid from "uniqid";
 
 interface userListInterface {
   email: string;
@@ -166,16 +163,18 @@ const UserSlice = createSlice({
         state.status = "loading";
         state.error = "";
       })
-      .addCase(
-        postCreateNewUser.fulfilled,
-        (state, action: PayloadAction<{ message: string }>) => {
-          state.status = "success";
-          state.error = "";
-        }
-      )
+      .addCase(postCreateNewUser.fulfilled, (state) => {
+        state.status = "success";
+        state.error = "";
+      })
       .addCase(
         postCreateNewUser.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof postCreateNewUser.rejected> & {
+            payload: string;
+          }
+        ) => {
           state.status = "error";
           state.error =
             action.payload || action.error?.message || "An error occurred";
@@ -193,7 +192,12 @@ const UserSlice = createSlice({
       })
       .addCase(
         fetchUserList.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof fetchUserList.rejected> & {
+            payload: string;
+          }
+        ) => {
           state.status = "error";
           state.error =
             action.payload || action.error?.message || "An error occurred";
@@ -205,35 +209,37 @@ const UserSlice = createSlice({
         state.status = "loading";
         state.error = "";
       })
-      .addCase(
-        postUserLogin.fulfilled,
-        (state, action: PayloadAction<{ message: string; token: string }>) => {
-          state.status = "success";
-          state.error = "";
-          localStorage.setItem("token", action.payload.token);
-          try {
-            const {
-              email,
-              userId,
-              exp,
-            }: {
-              email: string;
-              userId: string;
-              exp: number;
-            } = jwtDecode<customJwtPayload>(action.payload.token);
-            state.email = email;
-            state.userId = userId;
-            state.exp = exp;
-          } catch (err: unknown) {
-            const mssg: string =
-              err instanceof Error ? err.message : "An error occurred";
-            state.error = mssg;
-          }
+      .addCase(postUserLogin.fulfilled, (state, action) => {
+        state.status = "success";
+        state.error = "";
+        localStorage.setItem("token", action.payload.token);
+        try {
+          const {
+            email,
+            userId,
+            exp,
+          }: {
+            email: string;
+            userId: string;
+            exp: number;
+          } = jwtDecode<customJwtPayload>(action.payload.token);
+          state.email = email;
+          state.userId = userId;
+          state.exp = exp;
+        } catch (err: unknown) {
+          const mssg: string =
+            err instanceof Error ? err.message : "An error occurred";
+          state.error = mssg;
         }
-      )
+      })
       .addCase(
         postUserLogin.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof postUserLogin.rejected> & {
+            payload: string;
+          }
+        ) => {
           state.status = "error";
           state.error =
             action.payload || action.error?.message || "An error occurred";

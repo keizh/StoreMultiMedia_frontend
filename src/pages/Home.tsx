@@ -1,6 +1,6 @@
 import useAuthChecker from "../customHooks/useAuthChecker";
 import NavBarComp from "../components/NavBar";
-import { useLoaderData, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Typography } from "@material-tailwind/react";
 import useSelectorHook from "../customHooks/useSelectorHook";
 import { motion } from "motion/react";

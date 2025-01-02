@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from "react";
 import ChipDismissible from "../components/chipTag";
 import {
@@ -9,30 +8,30 @@ import {
   Input,
   Typography,
 } from "@material-tailwind/react";
-import useSelectorHook from "../customHooks/useSelectorHook";
+
 import useDispatchHook from "../customHooks/useDispatchHook";
 import { postPhotos } from "../features/Photos/PhotosSlice";
 import { useParams } from "react-router-dom";
 import uniqid from "uniqid";
 
-export default function UploadImages({ albumI }) {
+export default function UploadImages() {
   const [tagRef, setTagRef] = useState("");
   const init = { name: "", tags: [], images: [] };
 
   const [open, setOpen] = useState(false);
   const [canClick, setCanClick] = useState(false);
   const [data, setData] = useState(init);
-  const { PhotosArr } = useSelectorHook("Photos");
+  // const { PhotosArr } = useSelectorHook("Photos");
   const dispatch = useDispatchHook();
   const handleOpen = () => setOpen(!open);
-  const { userId } = useSelectorHook("User");
+  // const { userId } = useSelectorHook("User");
   const { albumid } = useParams();
   console.log(`albumID -->`, albumid);
   useEffect(() => {
     // Additional logic can be added if needed
   }, [data]);
 
-  const handleImages = (e) => {
+  const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     const imageArray = Array.from(files);
     setData((data) => {
@@ -83,13 +82,13 @@ export default function UploadImages({ albumI }) {
     }
   }, [data]);
 
-  const submitHandler = (e) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formdata = new FormData();
     const tags = data.tags.map((ele) => ele.value);
     const images = data.images;
     const name = data.name;
-    formdata.append("tags", tags);
+    formdata.append("tags", JSON.stringify(tags));
     formdata.append("name", name);
     formdata.append("albumId", albumid);
     // images.forEach((ele) => {
@@ -97,10 +96,10 @@ export default function UploadImages({ albumI }) {
     // });
 
     // dispatching 1 image each time , why ? it is faster this way.
-    images.forEach((img) => {
+    images.forEach((img: File) => {
       formdata.append("images", img);
       dispatch(postPhotos(formdata));
-      formdata.delete("images", img);
+      formdata.delete("images");
     });
 
     // for (let [k, v] of formdata.entries()) {
@@ -178,6 +177,7 @@ export default function UploadImages({ albumI }) {
 
             {/* Album Name Input */}
             <Input
+              crossOrigin={undefined}
               value={data.name}
               onChange={(e) =>
                 setData((data) => ({
@@ -200,6 +200,7 @@ export default function UploadImages({ albumI }) {
               <br />
               <div className="flex gap-2">
                 <Input
+                  crossOrigin={undefined}
                   label="Add Tag"
                   className="p-1 rounded"
                   onChange={(e) => setTagRef(e.target.value)}

@@ -9,7 +9,7 @@ import Loader from "./pages/Loader.tsx";
 import SignUp from "./pages/Signup.tsx";
 import Login from "./pages/Login.tsx";
 import Home, { AuthorizedUserPage } from "./pages/Home.tsx";
-import { getPhotos } from "./features/Photos/PhotosSlice.tsx";
+import { getPhotos } from "./features/Photos/PhotosSlice.ts";
 import { fetchAlbumDetails } from "./features/Album/albumSlice.ts";
 import { fetchUserList } from "./features/userSignupSignin/userSSSlice.ts";
 import Album from "./components/Album.tsx";

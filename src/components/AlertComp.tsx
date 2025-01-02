@@ -40,7 +40,7 @@ function AlertComp(props: { ele: AlertType; index: number }) {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [dispatch, navigate, props.ele.alertId, props.ele.message]);
   return (
     <Alert
       className={`pointer-events-auto max-w-fit mx-2  absolute  ${

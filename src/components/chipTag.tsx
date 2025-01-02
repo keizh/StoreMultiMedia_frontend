@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip, Button } from "@material-tailwind/react";
+import { Chip } from "@material-tailwind/react";
 
 export default function ChipDismissible({ ele, setData }) {
   const [open, setOpen] = React.useState(true);

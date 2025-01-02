@@ -9,13 +9,14 @@ interface AlbumInterface {
   description: string;
   ownerId: string | Types.ObjectId;
   sharedUsers: string[];
+  _id?: string;
 }
 
 interface AlbumInterface {
   albumId: string;
   name: string;
   description: string;
-  ownerId: Types.ObjectId;
+  ownerId: Types.ObjectId | string;
   sharedUsers: string[];
 }
 const initialState: initialStateInterface = {
@@ -50,7 +51,7 @@ interface initialStateInterface {
 // RESPONSIBLE FOR FETCHING OWNER CREATED ALBUMS
 export const fetchOwnerAlbums = createAsyncThunk(
   "GET/ownersAlbums",
-  async (_, { dispatch, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URI}/api/v1/album/owner`,
@@ -74,7 +75,7 @@ export const fetchOwnerAlbums = createAsyncThunk(
 // RESPONSIBLE FOR FETCHING ALBUMS SHARED TO THE USER BY OTHER USERS
 export const fetchSharedAlbums = createAsyncThunk(
   "GET/sharedAlbums",
-  async (_, { dispatch, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URI}/api/v1/album/shared`,
@@ -284,7 +285,12 @@ const albumSlice = createSlice({
       )
       .addCase(
         fetchOwnerAlbums.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof fetchOwnerAlbums.rejected> & {
+            payload: string;
+          }
+        ) => {
           state.status = "error";
           state.error = action.payload || "An Error Occured";
         }
@@ -303,7 +309,12 @@ const albumSlice = createSlice({
       )
       .addCase(
         fetchSharedAlbums.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof fetchSharedAlbums.rejected> & {
+            payload: string;
+          }
+        ) => {
           state.status = "error";
           state.error = action.payload || "An Error Occured";
         }
@@ -318,7 +329,10 @@ const albumSlice = createSlice({
       })
       .addCase(
         createAlbum.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof createAlbum.rejected> & { payload: string }
+        ) => {
           state.status = "error";
           state.error = action.payload || "An Error Occured";
         }
@@ -341,7 +355,10 @@ const albumSlice = createSlice({
       )
       .addCase(
         deleteAlbum.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof deleteAlbum.rejected> & { payload: string }
+        ) => {
           state.status = "error";
           state.error = action.payload || "An Error Occured";
         }
@@ -360,7 +377,12 @@ const albumSlice = createSlice({
       )
       .addCase(
         fetchAlbumDetails.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof fetchAlbumDetails.rejected> & {
+            payload: string;
+          }
+        ) => {
           state.status = "error";
           state.error = action.payload || "An Error Occured";
         }
@@ -378,9 +400,12 @@ const albumSlice = createSlice({
       })
       .addCase(
         updateAlbum.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        (
+          state,
+          action: ReturnType<typeof updateAlbum.rejected> & { payload: string }
+        ) => {
           state.status = "error";
-          state.error = action.payload || "An Error Occured";
+          state.error = action.payload || "An Error Occurred";
           console.log(`LINE 359`);
         }
       );

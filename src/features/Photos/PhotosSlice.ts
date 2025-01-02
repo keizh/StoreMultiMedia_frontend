@@ -1,19 +1,14 @@
 import uniqid from "uniqid";
 
-import {
-  createSlice,
-  createAsyncThunk,
-  UnknownAction,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Types } from "mongoose";
 import { addAlert } from "../Alert/AlertSlice";
-import { create } from "framer-motion/client";
 
 export type commentOBJ = {
   comment: string;
   commentOwnerId: Types.ObjectId | string;
   commentId?: string;
+  _id?: string;
 };
 
 export interface ImageInterface {
@@ -28,11 +23,12 @@ export interface ImageInterface {
   isFavorite?: boolean;
   comments?: commentOBJ[];
   size: string;
+  _id?: string;
 }
 
 interface initialStateInterface {
-  PhotosArr: ImageInterface[] | [];
-  tags: string[] | [];
+  PhotosArr: ImageInterface[];
+  tags: string[];
   status: "idle" | "error" | "success" | "loading";
   error: string | null;
   chosenPhoto: null | ImageInterface;
@@ -298,11 +294,19 @@ const PhotoSlice = createSlice({
       )
       .addCase(
         getPhotos.rejected,
-        (state, action: PayloadAction<string | null>) => {
+        (
+          state,
+          action: ReturnType<typeof getPhotos.rejected> & { payload: string }
+        ) => {
           state.status = "error";
           state.error = action.payload || "Error occured while fetching Photos";
         }
       );
+
+    // action: PayloadAction<{
+    //   savedImages: ImageInterface[];
+    //   tags: string;
+    // }
 
     builder
       .addCase(postPhotos.pending, (state) => {
@@ -312,20 +316,25 @@ const PhotoSlice = createSlice({
         postPhotos.fulfilled,
         (
           state,
-          action: PayloadAction<{
-            savedImages: ImageInterface[];
-            tags: string;
-          }>
+          action: ReturnType<typeof postPhotos.fulfilled> & {
+            payload: {
+              message: string;
+              tags: string[];
+            };
+          }
         ) => {
           console.log(action.payload);
           state.status = "success";
           state.PhotosArr = [...state.PhotosArr, ...action.payload.savedImages];
-          state.tags = [...state.tags, action.payload.tags];
+          state.tags = [...state.tags, ...action.payload.tags];
         }
       )
       .addCase(
         postPhotos.rejected,
-        (state, action: PayloadAction<string | null>) => {
+        (
+          state,
+          action: ReturnType<typeof postPhotos.rejected> & { payload: string }
+        ) => {
           state.status = "error";
           state.error = action.payload || "Error occured while fetching Photos";
         }
@@ -346,7 +355,10 @@ const PhotoSlice = createSlice({
       )
       .addCase(
         deletePhoto.rejected,
-        (state, action: PayloadAction<string | null>) => {
+        (
+          state,
+          action: ReturnType<typeof deletePhoto.rejected> & { payload: string }
+        ) => {
           state.status = "error";
           state.error = action.payload || "Error occured while fetching Photos";
         }
@@ -382,7 +394,10 @@ const PhotoSlice = createSlice({
       )
       .addCase(
         addComment.rejected,
-        (state, action: PayloadAction<string | null>) => {
+        (
+          state,
+          action: ReturnType<typeof addComment.rejected> & { payload: string }
+        ) => {
           state.status = "error";
           state.error = action.payload || "Error occured while fetching Photos";
         }
@@ -409,7 +424,12 @@ const PhotoSlice = createSlice({
       )
       .addCase(
         removeComment.rejected,
-        (state, action: PayloadAction<string | null>) => {
+        (
+          state,
+          action: ReturnType<typeof removeComment.rejected> & {
+            payload: string;
+          }
+        ) => {
           state.status = "error";
           state.error = action.payload || "Error occured while fetching Photos";
         }
