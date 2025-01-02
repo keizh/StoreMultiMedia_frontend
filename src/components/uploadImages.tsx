@@ -86,6 +86,8 @@ export default function UploadImages() {
     e.preventDefault();
     const formdata = new FormData();
     const tags = data.tags.map((ele) => ele.value);
+    // console.log(tags);
+
     const images = data.images;
     const name = data.name;
     formdata.append("tags", JSON.stringify(tags));

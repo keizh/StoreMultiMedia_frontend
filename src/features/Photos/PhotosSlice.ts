@@ -327,6 +327,7 @@ const PhotoSlice = createSlice({
           state.status = "success";
           state.PhotosArr = [...state.PhotosArr, ...action.payload.savedImages];
           state.tags = [...state.tags, ...action.payload.tags];
+          console.log(`----->data=>`, action.payload);
         }
       )
       .addCase(
