@@ -124,10 +124,10 @@ export function SignUp() {
     <div className="min-h-[100vh] overflow-y-auto overflow-x-hidden w-full flex justify-center items-center">
       <div className="max-w-[90%] sm:w-[400px]">
         <Typography className="text-center" variant="h4" color="blue-gray">
-          KoviasPix
+          StoreMultiMedia
         </Typography>
         <Typography color="gray" className="text-center mt-1 font-normal">
-          Welcome to KoviasPix. Enter your details to register.
+          Welcome to StoreMultiMedia. Enter your details to register.
         </Typography>
         <form
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {

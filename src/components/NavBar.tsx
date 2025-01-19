@@ -27,6 +27,8 @@ export default function NavBarComp() {
 
   const SignOutHandler = () => {
     navigate("/user/login", { replace: true });
+    sessionStorage.removeItem('viewerIsOwner');
+    sessionStorage.removeItem('imgDisplayData');
     dispatch(removeUserLoginCredential());
     dispatch(addAlert({ alertId: uniqid(), message: "Logout", color: "red" }));
   };
@@ -39,7 +41,7 @@ export default function NavBarComp() {
         </Typography> */}
         <NavLink to="/user/auth/photos">
           <Typography variant="h4" color="blue" textGradient>
-            KoviasPix
+            StoreMultiMedia
           </Typography>
         </NavLink>
         <div className="flex items-center gap-4">

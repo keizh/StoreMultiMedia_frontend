@@ -1,18 +1,22 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React,{useLayoutEffect} from "react";
+import { useNavigate , useLocation } from "react-router-dom";
 import { Button } from "@material-tailwind/react";
 import useSelectorHook from "../customHooks/useSelectorHook";
 import useDispatchHook from "../customHooks/useDispatchHook";
 import { deletePhoto } from "../features/Photos/PhotosSlice";
-function ButtonGroupComp({ setOpen, imgOwnerId, imageId, src }) {
+function ButtonGroupComp({ setOpen, imgOwnerId, imageId, src , viewerIsOwner , albumid }) {
+  // const location=useLocation();
+  // const {viewerIsOwner}=location.state;
   const navigate = useNavigate();
   const dispatch = useDispatchHook();
   const [loading, setLoading] = React.useState(false);
-  const { userId } = useSelectorHook("User");
+  // const { userId } = useSelectorHook("User");
+
   const handleDelete = async () => {
     setLoading(true);
     await dispatch(deletePhoto(imageId));
-    navigate(-1);
+    // sessionStorage.removeItem('imgDisplayData');
+    navigate(`/user/auth/album/${albumid}`);
   };
 
   const handleDownload = async () => {
@@ -30,6 +34,8 @@ function ButtonGroupComp({ setOpen, imgOwnerId, imageId, src }) {
         document.body.removeChild(link);
       });
   };
+
+
   return (
     <div className="fixed flex gap-2 bottom-3 left-1/2 -translate-x-1/2 ">
       <Button onClick={handleDownload} color="yellow">
@@ -38,7 +44,7 @@ function ButtonGroupComp({ setOpen, imgOwnerId, imageId, src }) {
       <Button onClick={() => setOpen((open) => !open)} color="blue">
         Comment
       </Button>
-      {userId == imgOwnerId && (
+      {viewerIsOwner && (
         <Button loading={loading} onClick={handleDelete} color="red">
           Delete
         </Button>

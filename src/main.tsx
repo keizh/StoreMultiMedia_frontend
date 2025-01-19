@@ -16,7 +16,9 @@ import Album from "./components/Album.tsx";
 import ImageComp from "./components/ImageComp.tsx";
 
 const AlbumPhotosCompfetchPhotos = ({ params }) => {
+  console.log(`executing loadeer AlbumPhotosCompfetchPhotos`);
   const { albumid } = params;
+  console.log(`21---:>`,albumid);
   store.dispatch(getPhotos(albumid));
   store.dispatch(fetchAlbumDetails(albumid));
   store.dispatch(fetchUserList());

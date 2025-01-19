@@ -1,19 +1,31 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState , useLayoutEffect } from "react";
+import { useLocation, useNavigate , Navigate} from "react-router-dom";
 import ButtonGroupComp from "./ButtonGroupComp";
 import CommentBox from "./CommentBox";
 import { AnimatePresence } from "framer-motion";
 function ImageComp() {
   const location = useLocation();
   const navigate = useNavigate();
-  // const { photoInfo, viewerIsOwner } = location.state;
-  const { photoInfo } = location.state;
   const [open, setOpen] = useState(false);
+  const photoInfo=location?.state?.photoInfo || JSON.parse(sessionStorage.getItem(`imgDisplayData`)).photoInfo;
+  const viewerIsOwner=location?.state?.viewerIsOwner || JSON.parse(sessionStorage.getItem(`viewerIsOwner`));
+
+  const imageId=photoInfo?.imageId;
+  const imgOwnerId=photoInfo?.imgOwnerId;
+  const src=photoInfo?.imgURL;
+  const albumid=photoInfo?.albumId;
+
+  const handleButtonClick=()=>
+  {
+    // sessionStorage.removeItem('imgDisplayData'); 
+    navigate(`/user/auth/album/${albumid}`);
+  }
+
   return (
     <div className="h-screen w-screen bg-black relative overflow-hidden">
       <button
         className="absolute z-[1000] text-[10px] top-[10px] right-[10px] bg-white p-2 rounded-xl flex gap-2 items-center"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(`/user/auth/album/${albumid}`)        }
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -32,17 +44,19 @@ function ImageComp() {
         MOVE BACK
       </button>
       <img
-        src={photoInfo.imgURL}
+        src={photoInfo?.imgURL}
         className="absolute top-[50%] left-[50%] -translate-x-2/4 -translate-y-2/4 object-contain"
       />
       <ButtonGroupComp
-        imageId={photoInfo.imageId}
-        imgOwnerId={photoInfo.imgOwnerId}
+        imageId={imageId}
+        imgOwnerId={imgOwnerId}
         setOpen={setOpen}
-        src={photoInfo.imgURL}
+        src={src}
+        viewerIsOwner={viewerIsOwner}
+        albumid={albumid}
       />
       <AnimatePresence>
-        {open && <CommentBox imageId={photoInfo.imageId} />}
+        {open && <CommentBox imageId={imageId} />}
       </AnimatePresence>
     </div>
   );

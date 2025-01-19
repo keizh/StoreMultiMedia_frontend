@@ -61,7 +61,7 @@ export function Login() {
     <div className="min-h-[100vh] overflow-y-auto overflow-x-hidden w-full flex justify-center items-center">
       <div className="max-w-[90%] sm:w-[400px]">
         <Typography className="text-center" variant="h4" color="blue-gray">
-          Login to KoviasPix
+          Login to StoreMultiMedia
         </Typography>
         <form
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {

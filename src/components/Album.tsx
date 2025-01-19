@@ -4,11 +4,14 @@ import UpdateAlbum from "../components/UpdateAlbum";
 import useSelectorHook from "../customHooks/useSelectorHook";
 import { Button } from "@material-tailwind/react";
 import useDispatchHook from "../customHooks/useDispatchHook";
+import Loader from "../pages/Loader";
 import {
   setDeletedAlbumFalse,
   deleteAlbum,
 } from "../features/Album/albumSlice";
 import { Select, Option } from "@material-tailwind/react";
+import Favorite from "./Favorite";
+import ImgCompDisplay from "./ImgCompDisplay";
 
 import {
   emptyPhotos,
@@ -18,13 +21,14 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 function Album() {
   const navigate = useNavigate();
   const location = useLocation();
-  const viewerIsOwner = location.state;
+  const viewerIsOwner=location?.state || JSON.parse(sessionStorage.getItem(`viewerIsOwner`));
   const { PhotosArr, status, tags } = useSelectorHook("Photos");
   const { deletedAlbum } = useSelectorHook("Album");
+  const { userId } = useSelectorHook("User");
   const [deleteButton, setDeleteButton] = useState(false);
   const [tag, setTag] = useState("");
   const dispatch = useDispatchHook();
-  const { albumid } = useParams();
+  const { albumid  } = useParams();
   const deleteHandler = () => {
     setDeleteButton(true);
     dispatch(deleteAlbum(albumid));
@@ -32,7 +36,14 @@ function Album() {
 
   useLayoutEffect(() => {
     dispatch(setDeletedAlbumFalse());
+    // if(!viewerIsOwner)
+    // {
+    //   console.log(viewerIsOwner)
+    //   console.log(`line 41`)
+    //   navigate('/user/auth/photos');
+    // }
   }, [dispatch]);
+
   // const deletedAlbum = store.getState().Album.deletedAlbum;
   useEffect(() => {
     console.log(
@@ -50,7 +61,10 @@ function Album() {
       dispatch(emptyPhotos());
       navigate("/user/auth/photos");
     }
+    
   }, [deletedAlbum, deleteButton, navigate, dispatch]);
+
+  
 
   return (
     <div className="mt-[100px]">
@@ -87,55 +101,23 @@ function Album() {
           </Button>
         </div>
       )}
+
       {PhotosArr.length == 0 && status != "success" && <p>Loading</p>}
       {PhotosArr.length == 0 && status == "success" && <p>upload Images..</p>}
       {PhotosArr.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
           {tag == ""
             ? PhotosArr.map((ele) => (
-                <div
-                  key={ele._id}
-                  className="p-2 w-full aspect-square drop-shadow-2xl "
-                  onClick={() => {
-                    navigate(`/user/image`, {
-                      state: {
-                        photoInfo: ele,
-                        viewerIsOwner,
-                      },
-                    });
-                    dispatch(chosenPhotoReducer(ele));
-                  }}
-                >
-                  <img
-                    src={ele.imgURL}
-                    className="w-full select-none h-full rounded-2xl object-cover  cursor-pointer "
-                  />
-                </div>
+                <ImgCompDisplay ele={ele} />
               ))
             : PhotosArr.filter((ele) => ele.tags.includes(tag)).map((ele) => (
-                <div
-                  key={ele._id}
-                  className="p-2 w-full aspect-square drop-shadow-2xl "
-                  onClick={() => {
-                    navigate(`/user/image`, {
-                      state: {
-                        photoInfo: ele,
-                        viewerIsOwner,
-                      },
-                    });
-                    dispatch(chosenPhotoReducer(ele));
-                  }}
-                >
-                  <img
-                    src={ele.imgURL}
-                    className="w-full select-none h-full rounded-2xl object-cover  cursor-pointer "
-                  />
-                </div>
+                <ImgCompDisplay ele={ele} />
               ))}
         </div>
       )}
     </div>
   );
 }
+
 
 export default Album;

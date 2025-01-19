@@ -260,6 +260,91 @@ export const deletePhoto = createAsyncThunk(
   }
 );
 
+export const makeImgFavorite=createAsyncThunk("POST/isFavoriteTrue",async({imgId},{dispatch,rejectWithValue})=>
+{
+  console.log(`----------event sent to like image-----------`)
+  try
+  {
+    const res=await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/v1/image/markFavorite/${imgId}`,{
+      method:"POST",
+      headers: {
+        Authorization: `${localStorage.getItem("token")}`,
+      },
+    });
+    const resData=await res.json();
+    console.log(res);
+    console.log(resData);
+
+    if(!res.ok)
+    {
+      dispatch(
+        addAlert({
+          message: `${dataRes.message}`,
+          color: "red",
+          alertId: uniqid(),
+        })
+      );
+      throw new Error(dataRes.message);
+    }
+
+    dispatch(
+      addAlert({
+        message: `Image Liked`,
+        color: "green",
+        alertId: uniqid(),
+      })
+    );
+
+    return imgId;
+  }
+  catch(err)
+  {
+    return rejectWithValue(err.message);
+  }
+})
+
+export const makeImgUnFavorite=createAsyncThunk('POST/isFavoriteFalse',async({imgId},{dispatch,rejectValue})=>
+{
+  try
+  {
+    const res=await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/v1/image/markUnFavorite/${imgId}`,
+      {
+        method:"POST",
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const dataRes=await res.json();
+    if(!res.ok)
+    {
+      dispatch(
+        addAlert({
+          message: `${dataRes.message}`,
+          color: "red",
+          alertId: uniqid(),
+        })
+      );
+      throw new Error(res.message);
+    }
+
+    dispatch(
+      addAlert({
+        message: `${dataRes.message}`,
+        color: "green",
+        alertId: uniqid(),
+      })
+    );
+
+    return imgId;
+  }
+  catch(err)
+  {
+    return rejectWithValue(err.message);
+  }
+})
+
+
 const PhotoSlice = createSlice({
   name: "PhotoSlice",
   initialState,
@@ -269,7 +354,6 @@ const PhotoSlice = createSlice({
     },
     chosenPhotoReducer: (state, action) => {
       state.chosenPhoto = action.payload;
-      console.log(`-------------->`);
     },
   },
   extraReducers: (builder) => {
@@ -288,7 +372,7 @@ const PhotoSlice = createSlice({
         ) => {
           state.status = "success";
           state.PhotosArr = action.payload.images;
-          state.tags = ["All Images", ...action.payload.tags];
+          state.tags = Array.from(new Set(["All Images", ...action.payload.tags]));
           console.log(`Photos fetched`, action.payload.images);
         }
       )
@@ -326,8 +410,7 @@ const PhotoSlice = createSlice({
           console.log(action.payload);
           state.status = "success";
           state.PhotosArr = [...state.PhotosArr, ...action.payload.savedImages];
-          state.tags = [...state.tags, ...action.payload.tags];
-          console.log(`----->data=>`, action.payload);
+          state.tags = Array.from(new Set([...state.tags, ...action.payload.tags]));
         }
       )
       .addCase(
@@ -435,6 +518,49 @@ const PhotoSlice = createSlice({
           state.error = action.payload || "Error occured while fetching Photos";
         }
       );
+
+      builder
+      .addCase(makeImgFavorite.pending,(state,action)=>
+      {
+      })
+      .addCase(makeImgFavorite.fulfilled,(state,action)=>
+      {
+        const imgId=action.payload;
+        state.PhotosArr=state.PhotosArr.map((ele)=>
+        {
+          if(ele._id==imgId)
+          {
+            ele.isFavorite=true;
+          }
+
+          return ele;
+        });
+      })
+      .addCase(makeImgFavorite.rejected,(state,action)=>
+      {
+        console.log(action.payload);
+      })
+
+      builder.addCase(makeImgUnFavorite.pending,(state,action)=>
+      {
+      })
+      .addCase(makeImgUnFavorite.fulfilled,(state,action)=>
+      {
+        const imgId=action.payload;
+        state.PhotosArr=state.PhotosArr.map((ele)=>
+        {
+          if(ele._id==imgId)
+          {
+            ele.isFavorite=false;
+          }
+          return ele;
+        })
+      })
+      .addCase(makeImgUnFavorite.rejected,(state,action)=>
+      {
+        console.log(action.payload);
+      })
+
   },
 });
 

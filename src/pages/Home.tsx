@@ -35,10 +35,12 @@ const AlbumCard = ({ shared, ele }) => {
           navigate(`/user/auth/album/${ele.albumId}`, {
             state: false,
           });
+          sessionStorage.setItem('viewerIsOwner',JSON.stringify(false));
         } else {
           navigate(`/user/auth/album/${ele.albumId}`, {
             state: true,
           });
+          sessionStorage.setItem('viewerIsOwner',JSON.stringify(true));
         }
       }}
     >
