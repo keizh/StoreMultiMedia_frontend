@@ -40,6 +40,7 @@ function ImgCompDisplay({ele}) {
       className="w-full select-none h-full rounded-2xl object-cover  cursor-pointer "
     />
     <Favorite userId={userId} ele={ele}/>
+    <p className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-none p-1 bg-white rounded">{ele.name}</p>
   </div>
   )
 }
