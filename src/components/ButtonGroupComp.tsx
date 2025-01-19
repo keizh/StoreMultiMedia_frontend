@@ -1,10 +1,10 @@
-import React,{useLayoutEffect} from "react";
-import { useNavigate , useLocation } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@material-tailwind/react";
-import useSelectorHook from "../customHooks/useSelectorHook";
+
 import useDispatchHook from "../customHooks/useDispatchHook";
 import { deletePhoto } from "../features/Photos/PhotosSlice";
-function ButtonGroupComp({ setOpen, imgOwnerId, imageId, src , viewerIsOwner , albumid }) {
+function ButtonGroupComp({ setOpen, imageId, src, viewerIsOwner, albumid }) {
   // const location=useLocation();
   // const {viewerIsOwner}=location.state;
   const navigate = useNavigate();
@@ -34,7 +34,6 @@ function ButtonGroupComp({ setOpen, imgOwnerId, imageId, src , viewerIsOwner , a
         document.body.removeChild(link);
       });
   };
-
 
   return (
     <div className="fixed flex gap-2 bottom-3 left-1/2 -translate-x-1/2 ">
