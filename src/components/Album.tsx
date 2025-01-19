@@ -41,7 +41,7 @@ function Album() {
   };
   const callBackToFilter=(val)=>
   {
-    dispatch(filteredPhotosArrFB(val));
+    dispatch(filteredPhotosArrFB(val.trim()));
   }
 
   const debouncedSearchValue=useDebounce(search,callBackToFilter,500);
@@ -80,7 +80,7 @@ function Album() {
 
   return (
     <div className="mt-[100px]">
-      <div className="mt-[120px] flex flex-wrap gap-[30px] justify-center">
+      <div className="mt-[120px] mb-[50px] flex flex-wrap gap-[30px] justify-center">
         <div style={{width:'250px'}}>
        
         <Select onChange={(val) => setTag(val)} label="Filter based on Tag">
