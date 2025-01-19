@@ -27,6 +27,7 @@ export interface ImageInterface {
 }
 
 interface initialStateInterface {
+  filteredPhotosArr:ImageInterface[];
   PhotosArr: ImageInterface[];
   tags: string[];
   status: "idle" | "error" | "success" | "loading";
@@ -35,6 +36,7 @@ interface initialStateInterface {
 }
 
 const initialState: initialStateInterface = {
+  filteredPhotosArr:[],
   PhotosArr: [],
   tags: [],
   status: "idle",
@@ -355,6 +357,14 @@ const PhotoSlice = createSlice({
     chosenPhotoReducer: (state, action) => {
       state.chosenPhoto = action.payload;
     },
+    filteredPhotosArrFB:(state,action)=>
+    {
+      console.log(`executing filtering search ${action.payload}`)
+      state.filteredPhotosArr=state.PhotosArr.filter((ele)=>
+      {
+       return  ele.name.toLowerCase().includes(action.payload.toLowerCase())
+      })
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -564,5 +574,5 @@ const PhotoSlice = createSlice({
   },
 });
 
-export const { emptyPhotos, chosenPhotoReducer } = PhotoSlice.actions;
+export const { emptyPhotos,filteredPhotosArrFB, chosenPhotoReducer } = PhotoSlice.actions;
 export default PhotoSlice;

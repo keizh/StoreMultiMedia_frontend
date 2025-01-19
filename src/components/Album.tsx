@@ -1,17 +1,20 @@
-import { useLayoutEffect, useState, useEffect } from "react";
+import { useLayoutEffect, useState, useEffect , useRef } from "react";
 import UploadImages from "../components/uploadImages";
 import UpdateAlbum from "../components/UpdateAlbum";
 import useSelectorHook from "../customHooks/useSelectorHook";
 import { Button } from "@material-tailwind/react";
 import useDispatchHook from "../customHooks/useDispatchHook";
+import useDebounce from "../customHooks/useDebounce";
 import Loader from "../pages/Loader";
 import {
   setDeletedAlbumFalse,
   deleteAlbum,
 } from "../features/Album/albumSlice";
-import { Select, Option } from "@material-tailwind/react";
+import {filteredPhotosArrFB} from "../features/Photos/PhotosSlice"
+import { Select, Option , Input } from "@material-tailwind/react";
 import Favorite from "./Favorite";
 import ImgCompDisplay from "./ImgCompDisplay";
+
 
 import {
   emptyPhotos,
@@ -22,10 +25,13 @@ function Album() {
   const navigate = useNavigate();
   const location = useLocation();
   const viewerIsOwner=location?.state || JSON.parse(sessionStorage.getItem(`viewerIsOwner`));
-  const { PhotosArr, status, tags } = useSelectorHook("Photos");
+  const { PhotosArr,filteredPhotosArr ,  status, tags } = useSelectorHook("Photos");
   const { deletedAlbum } = useSelectorHook("Album");
   const { userId } = useSelectorHook("User");
   const [deleteButton, setDeleteButton] = useState(false);
+
+  const [search,setSearch]=useState("");
+
   const [tag, setTag] = useState("");
   const dispatch = useDispatchHook();
   const { albumid  } = useParams();
@@ -33,6 +39,12 @@ function Album() {
     setDeleteButton(true);
     dispatch(deleteAlbum(albumid));
   };
+  const callBackToFilter=(val)=>
+  {
+    dispatch(filteredPhotosArrFB(val));
+  }
+
+  const debouncedSearchValue=useDebounce(search,callBackToFilter,500);
 
   useLayoutEffect(() => {
     dispatch(setDeletedAlbumFalse());
@@ -68,7 +80,9 @@ function Album() {
 
   return (
     <div className="mt-[100px]">
-      <div className="min-w-[150px] w-[300px] mt-[100px]">
+      <div className="mt-[120px] flex flex-wrap gap-[30px] justify-center">
+        <div style={{width:'250px'}}>
+       
         <Select onChange={(val) => setTag(val)} label="Filter based on Tag">
           {tags.map((ele, idx) => {
             if (ele == "All Images") {
@@ -86,6 +100,10 @@ function Album() {
             }
           })}
         </Select>
+        </div>
+        <div style={{width:'250px'}}>
+          <Input label="Search" value={search} type="text" onChange={(e)=>setSearch(e.target.value)} />
+        </div>
       </div>
       {viewerIsOwner && (
         <div className="flex p-5 justify-end gap-2 ">
@@ -106,13 +124,42 @@ function Album() {
       {PhotosArr.length == 0 && status == "success" && <p>upload Images..</p>}
       {PhotosArr.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
-          {tag == ""
+          {/* {tag == ""
             ? PhotosArr.map((ele) => (
                 <ImgCompDisplay ele={ele} />
               ))
             : PhotosArr.filter((ele) => ele.tags.includes(tag)).map((ele) => (
                 <ImgCompDisplay ele={ele} />
-              ))}
+              ))} */}
+
+              {/*  NO tag , YES search */}
+            {tag == "" && debouncedSearchValue!="" && (
+              filteredPhotosArr.map((ele) => (
+                <ImgCompDisplay ele={ele} />
+              ))
+            )}
+
+               {/*  YES tag , NO search */}
+               {tag != "" && debouncedSearchValue=="" && (
+              PhotosArr.filter((ele) => ele.tags.includes(tag)).map((ele) => (
+                <ImgCompDisplay ele={ele} />
+              ))
+            )}
+
+            {/*  NO tag , NO search */}
+            {(tag == "" || tag=="All Images") && debouncedSearchValue=="" && (
+              PhotosArr.map((ele) => (
+                <ImgCompDisplay ele={ele} />
+              ))
+            )}
+
+             {/*  YES tag , YES search */}
+             {tag != "" && debouncedSearchValue != "" && (
+              filteredPhotosArr.filter((ele) => ele.tags.includes(tag)).map((ele) => (
+                <ImgCompDisplay ele={ele} />
+              ))
+            )}
+
         </div>
       )}
     </div>
