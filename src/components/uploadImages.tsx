@@ -117,7 +117,7 @@ export default function UploadImages() {
         Upload Images
       </Button>
       <Dialog size="xs" open={open} handler={handleOpen}>
-        <DialogHeader>Create a New Album</DialogHeader>
+        <DialogHeader>Select & Upload Images</DialogHeader>
         <DialogBody>
           <form onSubmit={submitHandler} className="py-2 flex flex-col gap-5">
             {/* Image Input */}

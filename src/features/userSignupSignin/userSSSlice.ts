@@ -40,13 +40,16 @@ export const postCreateNewUser = createAsyncThunk<
   { rejectValue: string }
 >("UserSlice/postCreateNewUser", async (obj, { dispatch, rejectWithValue }) => {
   try {
-    const res = await fetch(`http://localhost:5500/api/v1/auth/signup`, {
-      method: "POST",
-      body: JSON.stringify(obj),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/signup`,
+      {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const dataRes = await res.json();
 
@@ -81,13 +84,16 @@ export const postUserLogin = createAsyncThunk<
   { rejectValue: string }
 >("POST/userLogin", async (obj, { dispatch, rejectWithValue }) => {
   try {
-    const res = await fetch(`http://localhost:5500/api/v1/auth/login`, {
-      method: "POST",
-      body: JSON.stringify(obj),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/login`,
+      {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const dataRes = await res.json();
 
@@ -109,12 +115,15 @@ export const fetchUserList = createAsyncThunk(
   "fetch/userList",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const res = await fetch(`http://localhost:5500/api/v1/auth/fetch/users`, {
-        method: "GET",
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/fetch/users`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       const dataRes = await res.json();
 
